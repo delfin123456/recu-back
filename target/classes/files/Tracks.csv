@@ -1,11 +1,4 @@
-nombre,albumId,mediaTypeId,genreId,composer,milliseconds,bytes,unitPrice,trackId
-Billie Jean,1,1,1,Michael Jackson,294000,9856000,0.99,1
-Thriller,1,1,1,Michael Jackson,357000,12000000,0.99,2
-Beat It,1,1,1,Michael Jackson,258000,8600000,0.99,3
-Shape of You,2,1,1,Ed Sheeran,233000,7800000,0.99,4
-Perfect,2,1,1,Ed Sheeran,263000,8800000,0.99,5
-Castle on the Hill,2,1,1,Ed Sheeran,261000,8700000,0.99,6
-Bohemian Rhapsody,3,1,2,Queen,354000,11800000,1.29,7
-We Will Rock You,3,1,2,Queen,122000,4100000,0.99,8
-Another One Bites the Dust,3,1,2,Queen,215000,7200000,0.99,9
-We Are the Champions,3,1,2,Queen,179000,6000000,0.99,10
+name,albumName,mediaTypeName,genreName,composer,milliseconds,bytes,unitPrice,trackId
+Song A,Thriller,MP3,Pop,Michael,300000,4000000,0.99,1
+Song B,Thriller,MP3,Pop,Michael,250000,3200000,0.99,2
+Song C,Back in Black,WAV,Rock,AC/DC,200000,2800000,0.99,3
