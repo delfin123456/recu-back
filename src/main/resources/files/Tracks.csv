@@ -1,4 +1,13 @@
-name,albumName,mediaTypeName,genreName,composer,milliseconds,bytes,unitPrice,trackId
-Song A,Thriller,MP3,Pop,Michael,300000,4000000,0.99,1
-Song B,Thriller,MP3,Pop,Michael,250000,3200000,0.99,2
-Song C,Back in Black,WAV,Rock,AC/DC,200000,2800000,0.99,3
+name,albumTitle,artistName,mediaTypeName,genreName,composer,milliseconds,bytes,unitPrice,trackId
+Come Together,Abbey Road,The Beatles,MP3,Rock,Lennon/McCartney,259000,8350000,0.99,1
+Something,Abbey Road,The Beatles,MP3,Rock,George Harrison,182000,6200000,0.99,2
+Let It Be,Let It Be,The Beatles,MP3,Rock,Lennon/McCartney,243000,7800000,0.99,3
+Billie Jean,Thriller,Michael Jackson,MP3,Pop,Michael Jackson,294000,9000000,1.29,4
+Beat It,Thriller,Michael Jackson,MP3,Pop,Michael Jackson,258000,8700000,1.29,5
+Thriller,Thriller,Michael Jackson,MP3,Pop,Michael Jackson,357000,11000000,1.29,6
+Back In Black,Back In Black,AC/DC,MP3,Rock,Young/Young/Johnson,255000,8400000,0.99,7
+Hells Bells,Back In Black,AC/DC,MP3,Rock,Young/Young/Johnson,312000,9500000,0.99,8
+Halo,I Am... Sasha Fierce,Beyoncé,MP3,Pop,Beyoncé,261000,8300000,1.29,9
+Single Ladies,I Am... Sasha Fierce,Beyoncé,MP3,Pop,Beyoncé,194000,7000000,1.29,10
+Shake It Off,1989,Taylor Swift,MP3,Pop,Taylor Swift,219000,7600000,1.29,11
+Blank Space,1989,Taylor Swift,MP3,Pop,Taylor Swift,231000,7800000,1.29,12
