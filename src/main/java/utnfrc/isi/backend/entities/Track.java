@@ -22,7 +22,7 @@ public class Track {
     @Column(name = "NAME", nullable = false, length = 200)
     private String name;
     
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "ALBUM_ID")
     private Album album;
     
@@ -30,7 +30,7 @@ public class Track {
     @JoinColumn(name = "MEDIA_TYPE_ID", nullable = false)
     private MediaType mediaType;
     
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "GENRE_ID")
     private Genre genre;
     

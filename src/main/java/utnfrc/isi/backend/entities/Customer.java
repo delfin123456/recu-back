@@ -51,7 +51,7 @@ public class Customer {
     @Column(name = "EMAIL", nullable = false, length = 60)
     private String email;
     
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "SUPPORT_REP_ID")
     private Employee supportRep;
 }
