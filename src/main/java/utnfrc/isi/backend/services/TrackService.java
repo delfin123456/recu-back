@@ -23,6 +23,8 @@ public class TrackService implements IService {
         
         // Consulta 2: Top 3 álbumes con más tracks
         showTopAlbumsWithMostTracks();
+
+        showTracksByArtist("Michael Jackson");
     }
     
     /**
@@ -76,4 +78,36 @@ public class TrackService implements IService {
             e.printStackTrace();
         }
     }
+
+    public void showTracksByArtist(String artistName) {
+    System.out.println("═══════════════════════════════════════════════════════════");
+    System.out.println("  CONSULTA 3: Tracks de un Artista");
+    System.out.println("═══════════════════════════════════════════════════════════");
+
+    try {
+        var tracks = trackRepo.findByArtistName(artistName);
+
+        if (tracks.isEmpty()) {
+            System.out.println("  No hay tracks para el artista: " + artistName);
+            System.out.println();
+            return;
+        }
+
+        System.out.println("  Artista: " + artistName);
+        System.out.println("  Cantidad de tracks: " + tracks.size());
+        System.out.println();
+
+        for (var t : tracks) {
+            System.out.println("  - \"" + t.getName() + "\" (" +
+                    t.getAlbum().getTitle() + ", " +
+                    t.getGenre().getName() + ")");
+        }
+        System.out.println();
+
+    } catch (Exception e) {
+        System.err.println("[ERROR] No se pudieron obtener tracks del artista '" +
+                artistName + "': " + e.getMessage());
+    }
+}
+
 }

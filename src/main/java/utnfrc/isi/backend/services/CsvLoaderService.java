@@ -2,6 +2,7 @@ package utnfrc.isi.backend.services;
 
 import jakarta.persistence.EntityManager;
 import utnfrc.isi.backend.entities.Album;
+import utnfrc.isi.backend.entities.Artist;
 import utnfrc.isi.backend.entities.Genre;
 import utnfrc.isi.backend.entities.MediaType;
 import utnfrc.isi.backend.entities.Track;
@@ -57,47 +58,47 @@ public class CsvLoaderService implements IService {
     }
 
     /**
-     * Formato CSV esperado:
-     * name,albumTitle,mediaTypeName,genreName,composer,milliseconds,bytes,unitPrice,trackId
+     * Formato CSV:
+     * name,albumTitle,artistName,mediaTypeName,genreName,composer,milliseconds,bytes,unitPrice,trackId
      */
     private void processLine(String line) {
         try {
-            String[] parts = line.split(",");
+            String[] parts = line.split(",", -1); // -1 para no perder columnas vacías
 
             if (hasEmptyFields(parts)) {
                 tracksSkipped++;
                 return;
             }
 
-            String name           = parts[0].trim();
-            String albumTitle     = parts[1].trim();
-            String mediaTypeName  = parts[2].trim();
-            String genreName      = parts[3].trim();
-            String composer       = parts[4].trim().isEmpty() ? null : parts[4].trim();
-            Integer milliseconds  = Integer.parseInt(parts[5].trim());
-            Integer bytes         = parts[6].trim().isEmpty() ? null : Integer.parseInt(parts[6].trim());
-            BigDecimal unitPrice  = new BigDecimal(parts[7].trim());
-            Integer trackId       = parts.length > 8 && !parts[8].trim().isEmpty()
-                    ? Integer.parseInt(parts[8].trim())
+            String trackName     = parts[0].trim();
+            String albumTitle    = parts[1].trim();
+            String artistName    = parts[2].trim();
+            String mediaTypeName = parts[3].trim();
+            String genreName     = parts[4].trim();
+            String composer      = parts[5].trim().isEmpty() ? null : parts[5].trim();
+            Integer milliseconds = Integer.parseInt(parts[6].trim());
+            Integer bytes        = parts[7].trim().isEmpty() ? null : Integer.parseInt(parts[7].trim());
+            BigDecimal unitPrice = new BigDecimal(parts[8].trim());
+            Integer trackId      = (parts.length > 9 && !parts[9].trim().isEmpty())
+                    ? Integer.parseInt(parts[9].trim())
                     : null;
 
-            // Usamos UN EntityManager por línea, así todo (album, genre, mediaType, track)
-            // se guarda en la MISMA transacción.
             EntityManager em = DbContext.getEntityManager();
             try {
                 em.getTransaction().begin();
 
-                // Buscar o crear dinámicamente las entidades relacionadas
-                Album album = findOrCreateAlbum(em, albumTitle);
+                // Buscar o crear dinámicamente entidades relacionadas
+                Artist artist       = findOrCreateArtist(em, artistName);
+                Album album         = findOrCreateAlbum(em, albumTitle, artist);
                 MediaType mediaType = findOrCreateMediaType(em, mediaTypeName);
-                Genre genre = findOrCreateGenre(em, genreName);
+                Genre genre         = findOrCreateGenre(em, genreName);
 
-                // Crear el Track
+                // Crear track
                 Track track = new Track();
-                if (trackId != null) {
+/*               if (trackId != null) {
                     track.setTrackId(trackId);
-                }
-                track.setName(name);
+                } */
+                track.setName(trackName);
                 track.setAlbum(album);
                 track.setMediaType(mediaType);
                 track.setGenre(genre);
@@ -107,8 +108,8 @@ public class CsvLoaderService implements IService {
                 track.setUnitPrice(unitPrice);
 
                 em.persist(track);
-                em.getTransaction().commit();
 
+                em.getTransaction().commit();
                 tracksInserted++;
 
             } catch (Exception e) {
@@ -131,23 +132,42 @@ public class CsvLoaderService implements IService {
      * Verifica que no falten campos obligatorios.
      */
     private boolean hasEmptyFields(String[] parts) {
-        // Necesitamos al menos 8 columnas obligatorias
-        if (parts.length < 8) return true;
+        // Necesitamos al menos 9 columnas obligatorias (hasta unitPrice)
+        if (parts.length < 9) return true;
 
         return parts[0].trim().isEmpty() ||  // name
                parts[1].trim().isEmpty() ||  // albumTitle
-               parts[2].trim().isEmpty() ||  // mediaTypeName
-               parts[3].trim().isEmpty() ||  // genreName
-               parts[5].trim().isEmpty() ||  // milliseconds
-               parts[7].trim().isEmpty();    // unitPrice
+               parts[2].trim().isEmpty() ||  // artistName
+               parts[3].trim().isEmpty() ||  // mediaTypeName
+               parts[4].trim().isEmpty() ||  // genreName
+               parts[6].trim().isEmpty() ||  // milliseconds
+               parts[8].trim().isEmpty();    // unitPrice
     }
 
     // ================== Helpers "find or create" ==================
 
-    private Album findOrCreateAlbum(EntityManager em, String title) {
+    private Artist findOrCreateArtist(EntityManager em, String name) {
+        List<Artist> results = em.createQuery(
+                        "SELECT a FROM Artist a WHERE a.name = :name", Artist.class)
+                .setParameter("name", name)
+                .setMaxResults(1)
+                .getResultList();
+
+        if (!results.isEmpty()) {
+            return results.get(0);
+        }
+
+        Artist artist = new Artist();
+        artist.setName(name);
+        em.persist(artist);
+        return artist;
+    }
+
+    private Album findOrCreateAlbum(EntityManager em, String title, Artist artist) {
         List<Album> results = em.createQuery(
-                        "SELECT a FROM Album a WHERE a.title = :title", Album.class)
+                        "SELECT a FROM Album a WHERE a.title = :title AND a.artist = :artist", Album.class)
                 .setParameter("title", title)
+                .setParameter("artist", artist)
                 .setMaxResults(1)
                 .getResultList();
 
@@ -157,6 +177,7 @@ public class CsvLoaderService implements IService {
 
         Album album = new Album();
         album.setTitle(title);
+        album.setArtist(artist);
         em.persist(album);
         return album;
     }
@@ -172,10 +193,10 @@ public class CsvLoaderService implements IService {
             return results.get(0);
         }
 
-        MediaType mt = new MediaType();
-        mt.setName(name);
-        em.persist(mt);
-        return mt;
+        MediaType media = new MediaType();
+        media.setName(name);
+        em.persist(media);
+        return media;
     }
 
     private Genre findOrCreateGenre(EntityManager em, String name) {

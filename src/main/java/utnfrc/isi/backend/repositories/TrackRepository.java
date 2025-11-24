@@ -67,4 +67,20 @@ public class TrackRepository extends Repository<Track> {
             em.close();
         }
     }
+
+        // Tracks por nombre de artista
+    public List<Track> findByArtistName(String artistName) {
+        EntityManager em = DbContext.getEntityManager();
+        try {
+            String jpql = "SELECT t FROM Track t " +
+                        "WHERE t.album.artist.name = :artistName " +
+                        "ORDER BY t.album.title, t.name";
+            return em.createQuery(jpql, Track.class)
+                    .setParameter("artistName", artistName)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
 }
