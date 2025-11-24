@@ -25,15 +25,16 @@ public class DbContext {
             
             // Cargar y ejecutar el DDL
             try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-                 Statement stmt = conn.createStatement()) {
-                
-                // Leer el archivo DDL desde resources
-                String ddl = new BufferedReader(
+                 Statement stmt = conn.createStatement();
+                BufferedReader reader = new BufferedReader(
                     new InputStreamReader(
                         DbContext.class.getClassLoader()
                             .getResourceAsStream("META-INF/db-schema.sql")
                     )
-                ).lines().collect(Collectors.joining("\n"));
+                )) {
+                
+                // Leer el archivo DSDL desde resources
+                String ddl = reader.lines().collect(Collectors.joining("\n"));
                 
                 // Ejecutar el DDL
                 stmt.execute(ddl);

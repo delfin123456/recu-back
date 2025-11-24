@@ -36,4 +36,35 @@ public class TrackRepository extends Repository<Track> {
             em.close();
         }
     }
+
+    // Contar tracks por género específico
+    public long countByGenreName(String genreName) {
+        EntityManager em = DbContext.getEntityManager();
+        try {
+            String jpql = "SELECT COUNT(t) FROM Track t WHERE t.genre.name = :genreName";
+            return em.createQuery(jpql, Long.class)
+                    .setParameter("genreName", genreName)
+                    .getSingleResult();
+        } finally {
+            em.close();
+        }
+    }
+    
+    // Top 3 álbumes con más tracks
+    public List<Object[]> getTopAlbumsWithMostTracks(int limit) {
+        EntityManager em = DbContext.getEntityManager();
+        try {
+            String jpql = "SELECT t.album.title, t.album.artist.name, COUNT(t) as trackCount " +
+                         "FROM Track t " +
+                         "WHERE t.album IS NOT NULL " +
+                         "GROUP BY t.album.albumId, t.album.title, t.album.artist.name " +
+                         "ORDER BY trackCount DESC";
+            
+            return em.createQuery(jpql, Object[].class)
+                    .setMaxResults(limit)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
 }

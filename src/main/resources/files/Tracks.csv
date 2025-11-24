@@ -1,0 +1,4 @@
+name,albumName,mediaTypeName,genreName,composer,milliseconds,bytes,unitPrice,trackId
+Song A,Thriller,MP3,Pop,Michael,300000,4000000,0.99,1
+Song B,Thriller,MP3,Pop,Michael,250000,3200000,0.99,2
+Song C,Back in Black,WAV,Rock,AC/DC,200000,2800000,0.99,3
