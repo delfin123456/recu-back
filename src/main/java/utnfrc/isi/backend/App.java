@@ -1,7 +1,9 @@
 package utnfrc.isi.backend;
 
 import utnfrc.isi.backend.repositories.context.DbContext;
+import utnfrc.isi.backend.services.AlbumService;
 import utnfrc.isi.backend.services.CsvLoaderService;
+import utnfrc.isi.backend.services.GenreService;
 import utnfrc.isi.backend.services.TrackService;
 
 public class App {
@@ -14,32 +16,26 @@ public class App {
         System.out.println("╚═══════════════════════════════════════════════════════════╝\n");
         
         try {
-            // ============================================================
-            // PASO 1: INICIALIZAR LA BASE DE DATOS
-            // ============================================================
+            //1
             System.out.println("[INICIO] Inicializando base de datos H2...");
             DbContext.initialize();
             
-            // ============================================================
-            // PASO 2: CARGAR DATOS DESDE EL CSV
-            // ============================================================
-            // Aquí se especifica la ruta del archivo CSV
-            String csvPath = "src/main/resources/files/tracks.csv";
+            //2:cargar csv
+            String csvPath = "src/main/resources/files/data.csv";
             
             CsvLoaderService csvLoader = new CsvLoaderService(csvPath);
             csvLoader.execute();
             
-            // ============================================================
-            // PASO 3: EJECUTAR CONSULTAS Y MOSTRAR RESULTADOS
-            // ============================================================
-            TrackService statsService = new TrackService();
-            statsService.execute();
+            //3: albumes mas largos
+            AlbumService albumService = new AlbumService();
+            albumService.execute();
             
-            // ============================================================
-            // PASO 4: MENSAJE FINAL
-            // ============================================================
+            //4: ranking de generos por precio promedio
+            GenreService genreService = new GenreService();
+            genreService.execute();
+  
             System.out.println("╔═══════════════════════════════════════════════════════════╗");
-            System.out.println("║  [OK] Proceso completado exitosamente                     ║");
+            System.out.println("║  [OK] Todos los informes generados exitosamente          ║");
             System.out.println("╚═══════════════════════════════════════════════════════════╝\n");
             
         } catch (Exception e) {
@@ -48,9 +44,7 @@ public class App {
             System.exit(1);
             
         } finally {
-            // ============================================================
-            // PASO 5: CERRAR RECURSOS
-            // ============================================================
+        
             DbContext.close();
         }
     }
